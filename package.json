@@ -1,0 +1,26 @@
+{
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "express": "^4.19.2",
+    "latest-version": "^9.0.0",
+    "mongoose": "^8.4.0"
+  },
+  "name": "geolocation_scan_tool",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon"
+  },
+  "author": "p",
+  "license": "ISC",
+  "description": "geolocation_scan_tool",
+  "repository": {
+    "type": "git",
+    "url": ".git"
+  },
+  "keywords": [
+    "geolocation_scan_tool"
+  ],
+  "type": "module"
+}
