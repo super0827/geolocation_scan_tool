@@ -1,4 +1,4 @@
-import getDistanceFromLatLonInMeters from '../utils/getDistance.js';
+import calculateDistance from '../utils/getDistance.js';
 import User from '../models/user.js';
 export default function userController(req, res, next){
     let peopleLocations = [];
@@ -15,7 +15,7 @@ export default function userController(req, res, next){
 
         let count = 0;
         for (const location of peopleLocations) {
-            const distance = getDistanceFromLatLonInMeters(parseFloat(newLocation.lat), parseFloat(newLocation.lng), parseFloat(location.lat), parseFloat(location.lng));
+            const distance = calculateDistance(parseFloat(newLocation.lat), parseFloat(newLocation.lng), parseFloat(location.lat), parseFloat(location.lng));
             if (distance <= 402) {
                 count++;
             }
