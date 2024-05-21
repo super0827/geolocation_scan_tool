@@ -1,6 +1,6 @@
 import getDistanceFromLatLonInMeters from '../utils/getDistance.js';
 import User from '../models/user.js';
-export default function UserController(req, res, next){
+export default function userController(req, res, next){
     let peopleLocations = [];
     User.find({}).exec().then((data) => {
         console.log(data);
