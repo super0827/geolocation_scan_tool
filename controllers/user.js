@@ -1,10 +1,10 @@
 import calculateDistance from '../utils/getDistance.js';
 import User from '../models/user.js';
-export default function userController(req, res, next){
+export default async function userController(req, res, next){
     let peopleLocations = [];
-    User.find({}).exec().then((data) => {
-        console.log(data);
+    await User.find({}).exec().then((data) => {
         peopleLocations = data;
+        console.log("peopleLocations", peopleLocations);
     });
     try {
         const newLocation = req.body.location;
@@ -14,14 +14,15 @@ export default function userController(req, res, next){
         }
 
         let count = 0;
-        for (const location of peopleLocations) {
-            const distance = calculateDistance(parseFloat(newLocation.lat), parseFloat(newLocation.lng), parseFloat(location.lat), parseFloat(location.lng));
+        for (const item of peopleLocations) {
+            const distance = calculateDistance(parseFloat(newLocation.lat), parseFloat(newLocation.lng), parseFloat(item.location.lat), parseFloat(item.location.lng));
+            console.log("distance", distance);
             if (distance <= 402) {
                 count++;
             }
         }
 
-        res.json({ count });
+        return res.json({ count });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal server error' });
