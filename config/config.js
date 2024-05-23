@@ -1,2 +1,2 @@
-export const mongoURI = "mongodb://127.0.0.1:27017/geolocation";
+export const mongoURI = "mongodb+srv://admin:FrW3wSB5zQ5XiWng@cluster0.u9jhip9.mongodb.net/geolocation";
 
