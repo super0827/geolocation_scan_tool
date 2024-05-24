@@ -20,9 +20,7 @@ export default async function userController(req, res, next){
             const distance = calculateDistance(parseFloat(newLocation.lat), parseFloat(newLocation.lng), parseFloat(item.location.lat), parseFloat(item.location.lng));
             console.log("distance", distance);
             if (distance <= 402) {
-                const getData = [];
-                getData.push({"lat":item.location.lat, "lng":item.location.lng});
-                peopleInDistance = [...peopleInDistance, ...getData];
+                peopleInDistance.push({"lat":item.location.lat, "lng":item.location.lng});
                 count++;
             }
         }
