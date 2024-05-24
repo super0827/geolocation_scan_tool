@@ -22,7 +22,7 @@ export default async function userController(req, res, next){
             if (distance <= 402) {
                 const getData = [];
                 getData.push({"lat":item.location.lat, "lng":item.location.lng});
-                peopleInDistance.push(getData);
+                peopleInDistance = [...peopleInDistance, ...getData];
                 count++;
             }
         }
