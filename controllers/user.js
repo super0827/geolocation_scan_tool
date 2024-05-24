@@ -14,15 +14,18 @@ export default async function userController(req, res, next){
         }
 
         let count = 0;
+        const peopleInDistance = [];
+        peopleInDistance.push(newLocation);
         for (const item of peopleLocations) {
             const distance = calculateDistance(parseFloat(newLocation.lat), parseFloat(newLocation.lng), parseFloat(item.location.lat), parseFloat(item.location.lng));
             console.log("distance", distance);
             if (distance <= 402) {
+                peopleInDistance.push(item);
                 count++;
             }
         }
 
-        return res.json({ count });
+        return res.json(peopleInDistance);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal server error' });
