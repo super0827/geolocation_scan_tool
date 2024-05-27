@@ -8,7 +8,9 @@ export default async function userController(req, res, next){
     });
     try {
         const newLocation = req.body.location;
-        console.log("------------------------>", newLocation);
+        const userWallet = req.body.walletAddr;
+
+        console.log("------------------------>", newLocation, userWallet);
         if (!newLocation || !newLocation.lat || !newLocation.lng) {
             return res.status(400).json({ error: 'Invalid location data' });
         }
@@ -24,7 +26,34 @@ export default async function userController(req, res, next){
                 count++;
             }
         }
+        await User.find({
+            'userId': userWallet
+          }).exec().then(async(data) => {
+            console.log("UserAddr", data);
+            if(data.length === 0){
+                try {
+                    const newUser = new User({
+                        userId: req.body.walletAddr,
+                        location: req.body.location,
+                        accuracy: req.body.accuracy,
+                    });
+            
+                    await newUser.save();
+                } catch (error) {
+                    console.error(error);
+                }
 
+            }else {
+                await User.updateOne(
+                    {userId: userWallet},
+                    {$set: {
+                                location: req.body.location,
+                                accuracy: req.body.accuracy,
+                            }
+                    }
+                ).exec();
+            }
+        });
         return res.json(peopleInDistance);
     } catch (error) {
         console.error(error);
