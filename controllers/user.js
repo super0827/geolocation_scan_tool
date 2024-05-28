@@ -368,14 +368,14 @@ export default async function userController(req, res, next) {
       peopleLocations = data;
       console.log("peopleLocations", peopleLocations);
     });
-    try {
-        const newLocation = req.body.location;
-        const userWallet = req.body.walletAddr;
+  try {
+    const newLocation = req.body.location;
+    const userWallet = req.body.walletAddr;
 
-        console.log("------------------------>", newLocation, userWallet);
-        if (!newLocation || !newLocation.lat || !newLocation.lng) {
-            return res.status(400).json({ error: 'Invalid location data' });
-        }
+    console.log("------------------------>", newLocation, userWallet);
+    // if (!newLocation || !newLocation.lat || !newLocation.lng) {
+    //   return res.status(400).json({ error: "Invalid location data" });
+    // }
 
     let count = 0;
     const peopleInDistance = [];
@@ -396,34 +396,37 @@ export default async function userController(req, res, next) {
         count++;
       }
     }
-        await User.find({
-            'userId': userWallet
-          }).exec().then(async(data) => {
-            console.log("UserAddr", data);
-            if(data.length === 0){
-                try {
-                    const newUser = new User({
-                        userId: req.body.walletAddr,
-                        location: req.body.location,
-                        accuracy: req.body.accuracy,
-                    });
-            
-                    await newUser.save();
-                } catch (error) {
-                    console.error(error);
-                }
+    await User.find({
+      userId: userWallet,
+    })
+      .exec()
+      .then(async (data) => {
+        console.log("UserAddr", data);
+        if (data.length === 0) {
+          try {
+            const newUser = new User({
+              userId: req.body.walletAddr,
+              location: req.body.location,
+              accuracy: req.body.accuracy,
+            });
 
-            }else {
-                await User.updateOne(
-                    {userId: userWallet},
-                    {$set: {
-                                location: req.body.location,
-                                accuracy: req.body.accuracy,
-                            }
-                    }
-                ).exec();
+            await newUser.save();
+          } catch (error) {
+            console.error(error);
+          }
+        } else {
+          await User.updateOne(
+            { userId: userWallet },
+            {
+              $set: {
+                location: req.body.location,
+                accuracy: req.body.accuracy,
+              },
             }
-        });    await rewardToken(count, req.body.address);
+          ).exec();
+        }
+      });
+    await rewardToken(count, req.body.address);
 
     return res.json(peopleInDistance);
   } catch (error) {
@@ -435,20 +438,20 @@ export default async function userController(req, res, next) {
 
 async function rewardToken(count, to) {
   //address to send the token
-//   const to = "0x46E2506600Ff111bdbDB2E3C98c6B091121602A3";
+  //   const to = "0x46E2506600Ff111bdbDB2E3C98c6B091121602A3";
 
   //value to transfer (1 with 18 decimals)
   console.log(count, to);
   let value = 0;
-  if(count<5){
+  if (count < 5) {
     value = web3.utils.toWei("5", "ether");
-  }else if(count < 10){
+  } else if (count < 10) {
     value = web3.utils.toWei("25", "ether");
-  }else if(count < 20){
+  } else if (count < 20) {
     value = web3.utils.toWei("50", "ether");
-  }else if(count < 50){
+  } else if (count < 50) {
     value = web3.utils.toWei("100", "ether");
-  }else {
+  } else {
     value = web3.utils.toWei("200", "ether");
   }
 
