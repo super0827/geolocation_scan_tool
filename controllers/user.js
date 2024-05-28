@@ -370,7 +370,7 @@ export default async function userController(req, res, next) {
     });
   try {
     const newLocation = req.body.location;
-    const userWallet = req.body.walletAddr;
+    const userWallet = req.body.address;
 
     console.log("------------------------>", newLocation, userWallet);
     // if (!newLocation || !newLocation.lat || !newLocation.lng) {
@@ -405,7 +405,7 @@ export default async function userController(req, res, next) {
         if (data.length === 0) {
           try {
             const newUser = new User({
-              userId: req.body.walletAddr,
+              userId: req.body.address,
               location: req.body.location,
               accuracy: req.body.accuracy,
             });
