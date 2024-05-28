@@ -2,6 +2,8 @@ import express from "express";
 import mongoose from "mongoose";
 import { mongoURI } from "./config/config.js";
 import userRouter from "./routers/user.js";
+import dotenv from 'dotenv';
+dotenv.config();
 
 const app = express();
 
