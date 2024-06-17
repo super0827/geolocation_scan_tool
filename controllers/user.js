@@ -362,40 +362,16 @@ const rewardTokenContract = new web3.eth.Contract(abi, address);
 
 export default async function userController(req, res, next) {
   let peopleLocations = [];
-  await User.find({})
-    .exec()
-    .then((data) => {
-      peopleLocations = data;
-      console.log("peopleLocations", peopleLocations);
-    });
+
   try {
     const newLocation = req.body.location;
     const userWallet = req.body.address;
 
     console.log("------------------------>", newLocation, userWallet);
-    // if (!newLocation || !newLocation.lat || !newLocation.lng) {
-    //   return res.status(400).json({ error: "Invalid location data" });
-    // }
-
-    let count = 0;
-    const peopleInDistance = [];
-    peopleInDistance.push(newLocation);
-    for (const item of peopleLocations) {
-      const distance = calculateDistance(
-        parseFloat(newLocation.lat),
-        parseFloat(newLocation.lng),
-        parseFloat(item.location.lat),
-        parseFloat(item.location.lng)
-      );
-      console.log("distance", distance);
-      if (distance <= 402) {
-        peopleInDistance.push({
-          lat: item.location.lat,
-          lng: item.location.lng,
-        });
-        count++;
-      }
+    if (!newLocation || !newLocation.lat || !newLocation.lng) {
+      return res.status(400).json({ error: "Invalid location data" });
     }
+
     await User.find({
       userId: userWallet,
     })
@@ -426,6 +402,34 @@ export default async function userController(req, res, next) {
           ).exec();
         }
       });
+
+    await User.find({})
+      .exec()
+      .then((data) => {
+        peopleLocations = data;
+        console.log("peopleLocations", peopleLocations);
+      });
+
+    let count = 0;
+    const peopleInDistance = [];
+    // peopleInDistance.push(newLocation);
+    for (const item of peopleLocations) {
+      const distance = calculateDistance(
+        parseFloat(newLocation.lat),
+        parseFloat(newLocation.lng),
+        parseFloat(item.location.lat),
+        parseFloat(item.location.lng)
+      );
+      console.log("distance", distance);
+      if (distance <= 402) {
+        peopleInDistance.push({
+          lat: item.location.lat,
+          lng: item.location.lng,
+        });
+        count++;
+      }
+    }
+
     await rewardToken(count, req.body.address);
 
     return res.json(peopleInDistance);
@@ -455,11 +459,17 @@ async function rewardToken(count, to) {
     value = web3.utils.toWei("200", "ether");
   }
 
-  //send the transaction => return the Tx receipt
-  const txReceipt = await rewardTokenContract.methods
-    .transfer(to, value)
-    .send({ from: account[0].address });
+  if (to === null || to === undefined) {
+    console.log("wallet error");
+    return;
+  } else {
+    const txReceipt = await rewardTokenContract.methods
+      .transfer(to, value)
+      .send({ from: account[0].address });
 
-  console.log("Tx hash:", txReceipt.transactionHash);
+    console.log("Tx hash:", txReceipt.transactionHash);
+  }
+
+  //send the transaction => return the Tx receipt
   // ↳ Tx hash: 0x14273c2b5781cc8f1687906c68bfc93482c603026d01b4fd37a04adb6217ad43
 }
