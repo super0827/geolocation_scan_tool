@@ -16,6 +16,9 @@ const UserSchema = new mongoose.Schema({
             required: true
         }
     },
+    profile: {
+        type: String,
+    },
     accuracy: {
         type: String,
         required: true

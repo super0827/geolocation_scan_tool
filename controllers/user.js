@@ -384,6 +384,7 @@ export default async function userController(req, res, next) {
               userId: req.body.address,
               location: req.body.location,
               accuracy: req.body.accuracy,
+              profile: req.body.profile,
             });
 
             await newUser.save();
@@ -397,6 +398,7 @@ export default async function userController(req, res, next) {
               $set: {
                 location: req.body.location,
                 accuracy: req.body.accuracy,
+                profile: req.body.profile,
               },
             }
           ).exec();
@@ -425,6 +427,7 @@ export default async function userController(req, res, next) {
         peopleInDistance.push({
           lat: item.location.lat,
           lng: item.location.lng,
+          profile: item.profile,
         });
         count++;
       }
